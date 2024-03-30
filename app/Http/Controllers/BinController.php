@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\BinResource;
 use App\Models\Bin;
 use Illuminate\Http\Request;
 

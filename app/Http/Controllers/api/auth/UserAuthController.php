@@ -19,12 +19,12 @@ class UserAuthController extends Controller
         $request->validate([
             'name' => 'required|string',
             'email' => 'required|email|unique:users',
-            'password' => 'required|string',
+            'password' => 'required|string|min:6',
             'address' => 'required|string',
             'city' => 'required|string',
             'latitude' => 'required|string',
             'longitude' => 'required|string',
-            'image' => 'sometimes|image',
+            'image' => 'required|image',
         ]);
 
         // check if image is uploaded
@@ -111,10 +111,10 @@ class UserAuthController extends Controller
     public function updateUser(Request $request)
     {
         $request->validate([
-            'name' => 'sometimes|string',
-            'address' => 'sometimes|string',
-            'city' => 'sometimes|string',
-            'image' => 'sometimes|image',
+            'name' => 'required|string',
+            'address' => 'required|string',
+            'city' => 'required|string',
+            'image' => 'required|image',
         ]);
 
         $user = Auth::user();
@@ -151,6 +151,31 @@ class UserAuthController extends Controller
     }
 
 
+    // update user position
+    public function updateUserPosition(Request $request)
+    {
+        $request->validate([
+            'latitude' => 'required|string',
+            'longitude' => 'required|string',
+        ]);
+
+        $user = Auth::user();
+
+        $user->update([
+            'latitude' => $request->latitude,
+            'longitude' => $request->longitude,
+        ]);
+
+        return response()->json([
+            'name' => $user->name,
+            'email' => $user->email,
+            'address' => $user->address,
+            'city' => $user->city,
+            'latitude' => $user->latitude,
+            'longitude' => $user->longitude,
+            'image' => Storage::disk('public')->url('images/' . $user->image),
+        ], 200);
+    }
 
 
 }

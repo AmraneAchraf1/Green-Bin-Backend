@@ -20,10 +20,10 @@ class CollectorAuthController extends Controller
         $request->validate([
             'name' => 'required|string',
             'email' => 'required|email|unique:collectors',
-            'password' => 'required|string',
+            'password' => 'required|string|min:6',
             'address' => 'required|string',
             'role' => 'required|string',
-            'image' => 'sometimes|image',
+            'image' => 'required|image',
         ]);
 
         // check if image is uploaded
@@ -80,7 +80,7 @@ class CollectorAuthController extends Controller
     // logout collector
     public function logout(Request $request)
     {
-        $collector = Auth::guard('collector')->user();
+        $collector = Auth::guard('sanctum')->user();
         $collector->tokens()->delete();
         return response()->json([
             'message' => 'Logged out'
@@ -90,7 +90,7 @@ class CollectorAuthController extends Controller
     // get collector
     public function getCollector(Request $request)
     {
-        $collector = Auth::guard('collector')->user();
+        $collector = Auth::guard('sanctum')->user();
         return response()->json([
             'name' => $collector->name,
             'email' => $collector->email,
@@ -103,12 +103,11 @@ class CollectorAuthController extends Controller
     // update collector
     public function updateCollector(Request $request)
     {
-        $collector = Auth::guard('collector')->user();
+        $collector = Auth::guard('sanctum')->user();
         $request->validate([
-            'name' => 'sometimes|string',
-            'email' => 'sometimes|email|unique:collectors,email',
-            'address' => 'sometimes|string',
-            'role' => 'sometimes|string',
+            'name' => 'required|string',
+            'address' => 'required|string',
+            'role' => 'required|string',
             'image' => 'sometimes|image',
         ]);
         // check if image is uploaded
@@ -126,7 +125,6 @@ class CollectorAuthController extends Controller
 
         $collector->update([
             'name' => $request->name,
-            'email' => $request->email,
             'address' => $request->address,
             'role' => $request->role,
             'image' => $request->image,
