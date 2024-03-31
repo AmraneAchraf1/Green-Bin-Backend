@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\api\auth\UserAuthController;
+use App\Http\Controllers\api\BinController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -26,3 +27,6 @@ Route::controller(UserAuthController::class)->group(function () {
     Route::put('/update-position', 'updateUserPosition')->middleware('auth:sanctum');
 });
 
+Route::post('/nearby-bins', [BinController::class, 'nearbyBins'])->middleware('auth:sanctum');
+Route::put('/update-bin-position/{bin}', [BinController::class, 'updateBinPosition'])->middleware('auth:sanctum');
+Route::apiResource('bins', BinController::class)->middleware('auth:sanctum');

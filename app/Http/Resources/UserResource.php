@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Storage;
 
-class BinResource extends JsonResource
+class UserResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,25 +16,17 @@ class BinResource extends JsonResource
     public function toArray(Request $request): array
     {
 
-        // unset bins from collector resource
-        $collector = $this->collector;
-        $collector->bins = [];
-
-
         return [
             'id' => $this->id,
-            'latitude' => $this->latitude,
-            'longitude' => $this->longitude,
+            'name' => $this->name,
+            'email' => $this->email,
             'address' => $this->address,
             'city' => $this->city,
-            'is_active' => $this->is_active,
-            'waste_type' => $this->waste_type,
-            'image' => $this->image ? Storage::disk('public')->url('bins/' . $this->image) : null,
-            'description' => $this->description,
-            'status' => $this->status,
+            'latitude' => $this->latitude,
+            'longitude' => $this->longitude,
+            'image' => $this->image ? Storage::disk('public')->url('images/' . $this->image) : null,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'collector' => new CollectorResource($collector),
             'trashes' => TrashResource::collection($this->trashes),
         ];
     }
