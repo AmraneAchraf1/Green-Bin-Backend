@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api\auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -50,7 +51,7 @@ class UserAuthController extends Controller
         $token = $user->createToken('user_token', ['user'])->plainTextToken;
 
         return response()->json([
-            'user' => $user,
+            'user' => new UserResource($user),
             'token' => $token
         ], 201);
 
@@ -75,7 +76,7 @@ class UserAuthController extends Controller
         $token = $user->createToken('user_token', ['user'])->plainTextToken;
 
         return response()->json([
-            'user' => $user,
+            'user' => new UserResource($user),
             'token' => $token
         ], 200);
 
@@ -96,15 +97,7 @@ class UserAuthController extends Controller
     public function getUser(Request $request)
     {
         $user = Auth::user();
-        return response()->json([
-            'name' => $user->name,
-            'email' => $user->email,
-            'address' => $user->address,
-            'city' => $user->city,
-            'latitude' => $user->latitude,
-            'longitude' => $user->longitude,
-            'image' => Storage::disk('public')->url('images/' . $user->image),
-        ], 200);
+        return response()->json(new UserResource($user), 200);
     }
 
     // update user
@@ -114,7 +107,7 @@ class UserAuthController extends Controller
             'name' => 'required|string',
             'address' => 'required|string',
             'city' => 'required|string',
-            'image' => 'required|image',
+            'image' => 'sometimes|image',
         ]);
 
         $user = Auth::user();
@@ -129,25 +122,18 @@ class UserAuthController extends Controller
             if  ($old_image && $new_image) {
                 Storage::delete('public/images/' . $old_image);
             }
-            $request->image = $image_name;
         }
+
+        $image_name = $image_name ?? $user->image;
 
         $user->update([
             'name' => $request->name,
             'address' => $request->address,
             'city' => $request->city,
-            'image' => $request->image,
+            'image' => $image_name,
         ]);
 
-        return response()->json([
-            'name' => $user->name,
-            'email' => $user->email,
-            'address' => $user->address,
-            'city' => $user->city,
-            'latitude' => $user->latitude,
-            'longitude' => $user->longitude,
-            'image' => Storage::disk('public')->url('images/' . $user->image),
-        ], 200);
+        return response()->json(new UserResource($user), 200);
     }
 
 
@@ -167,13 +153,9 @@ class UserAuthController extends Controller
         ]);
 
         return response()->json([
-            'name' => $user->name,
-            'email' => $user->email,
-            'address' => $user->address,
-            'city' => $user->city,
+            'id' => $user->id,
             'latitude' => $user->latitude,
             'longitude' => $user->longitude,
-            'image' => Storage::disk('public')->url('images/' . $user->image),
         ], 200);
     }
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api\auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\CollectorResource;
 use App\Models\Collector;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -47,7 +48,7 @@ class CollectorAuthController extends Controller
         $token = $collector->createToken('collector_token', ['collector'])->plainTextToken;
 
         return response()->json([
-            'collector' => $collector,
+            'collector' => new CollectorResource($collector),
             'token' => $token
         ], 201);
 
@@ -72,7 +73,7 @@ class CollectorAuthController extends Controller
         $token = $collector->createToken('collector_token', ['collector'])->plainTextToken;
 
         return response()->json([
-            'collector' => $collector,
+            'collector' => new CollectorResource($collector),
             'token' => $token
         ], 200);
     }
@@ -91,13 +92,7 @@ class CollectorAuthController extends Controller
     public function getCollector(Request $request)
     {
         $collector = Auth::guard('sanctum')->user();
-        return response()->json([
-            'name' => $collector->name,
-            'email' => $collector->email,
-            'address' => $collector->address,
-            'role' => $collector->role,
-            'image' => Storage::disk('public')->url('images/' . $collector->image),
-        ], 200);
+        return response()->json(new CollectorResource($collector), 200);
     }
 
     // update collector
@@ -120,23 +115,18 @@ class CollectorAuthController extends Controller
             if  ($old_image && $new_image) {
                 Storage::delete('public/images/' . $old_image);
             }
-            $request->image = $image_name;
         }
+
+        $image_name = $image_name ?? $collector->image;
 
         $collector->update([
             'name' => $request->name,
             'address' => $request->address,
             'role' => $request->role,
-            'image' => $request->image,
+            'image' => $image_name,
         ]);
 
-        return response()->json([
-            'name' => $collector->name,
-            'email' => $collector->email,
-            'address' => $collector->address,
-            'role' => $collector->role,
-            'image' => Storage::disk('public')->url('images/' . $collector->image),
-        ], 200);
+        return response()->json(new CollectorResource($collector), 200);
     }
 
 
