@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained();
             // foreign key to bin
             $table->foreignId('bin_id')->constrained();
-            $table->set('trash_type', ['plastic', 'paper', 'glass', 'metal', 'organic', 'mixed', 'dangerous', 'other']);
+            $table->set('trash_type', ['plastic', 'paper', 'glass', 'metal', 'organic', 'mixed', 'dangerous', 'other'])->default('other');
             $table->string('image')->nullable();
             $table->timestamps();
         });

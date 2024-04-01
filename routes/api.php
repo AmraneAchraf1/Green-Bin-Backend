@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\api\auth\UserAuthController;
 use App\Http\Controllers\api\BinController;
+use App\Http\Controllers\api\TrashController;
+use App\Http\Controllers\api\TruckController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -27,6 +29,10 @@ Route::controller(UserAuthController::class)->group(function () {
     Route::put('/update-position', 'updateUserPosition')->middleware('auth:sanctum');
 });
 
+
+//checkTruckLocation
+Route::post('/check-truck-location/{truck}', [TruckController::class, 'checkTruckLocation'])->middleware('auth:sanctum');
 Route::post('/nearby-bins', [BinController::class, 'nearbyBins'])->middleware('auth:sanctum');
 Route::put('/update-bin-position/{bin}', [BinController::class, 'updateBinPosition'])->middleware('auth:sanctum');
 Route::apiResource('bins', BinController::class)->middleware('auth:sanctum');
+Route::apiResource('trash', TrashController::class)->middleware('auth:sanctum');

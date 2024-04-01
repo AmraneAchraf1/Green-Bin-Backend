@@ -106,8 +106,6 @@ class BinController extends Controller
 
         $bin->update([
             'collector_id' => $request->collector_id,
-            'latitude' => $request->latitude,
-            'longitude' => $request->longitude,
             'address' => $request->address,
             'city' => $request->city,
             'is_active' => $request->is_active,
@@ -191,7 +189,7 @@ class BinController extends Controller
     /**
      * Calculate distance between two points
      */
-    private function distance($lat1, $lon1, $lat2, $lon2)
+    private function distance($lat1, $lon1, $lat2, $lon2): float
     {
         $theta = $lon1 - $lon2;
         $dist = sin(deg2rad($lat1)) * sin(deg2rad($lat2)) +  cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * cos(deg2rad($theta));

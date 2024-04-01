@@ -24,6 +24,12 @@ class CollectorResource extends JsonResource
         foreach ($bins as $bin) {
             $bin->collector = null;
         }
+
+        $trucks = $this->trucks;
+        $trucks = $trucks->map(function ($truck) {
+            $truck->collector = null;
+            return $truck;
+        });
         return [
             'id' => $this->id,
             'name' => $this->name,
@@ -34,7 +40,7 @@ class CollectorResource extends JsonResource
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'bins' => BinResource::collection($bins),
-            'trucks' => TruckResource::collection($this->trucks),
+            'trucks' => TruckResource::collection($trucks),
         ];
     }
 }

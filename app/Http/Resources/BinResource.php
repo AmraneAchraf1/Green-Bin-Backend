@@ -18,7 +18,9 @@ class BinResource extends JsonResource
 
         // unset bins from collector resource
         $collector = $this->collector;
-        $collector->bins = [];
+        if($collector->bins ?? false){
+            $collector->bins = [];
+        }
 
 
         return [

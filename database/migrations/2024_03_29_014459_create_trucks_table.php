@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('trucks', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('collector_id')->constrained();
+            $table->foreignId('collector_id')->unique()->constrained();
             $table->string('latitude');
             $table->string('longitude');
             $table->boolean('is_active')->default(true);
@@ -24,7 +24,6 @@ return new class extends Migration
             $table->set('working_days', ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']);
             // truck_capacity
             $table->integer('truck_capacity');
-
             $table->timestamps();
         });
     }

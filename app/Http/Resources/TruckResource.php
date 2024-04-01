@@ -14,10 +14,13 @@ class TruckResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        // remove truck from collector
+        $collector = $this->collector;
+
 
         return [
             'id' => $this->id,
-            'collector' => new CollectorResource($this->collector),
+            'collector' => new CollectorResource($collector),
             'latitude' => $this->latitude,
             'longitude' => $this->longitude,
             'is_active' => $this->is_active,
